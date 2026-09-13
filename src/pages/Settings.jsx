@@ -10,7 +10,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { useToast } from "@/context/UIContext";
 import { authApi } from "@/api/auth";
 import { useSettings, useUpdateSettings } from "@/hooks/useSettings";
-import { CURRENCIES, cn } from "@/lib/utils";
+import { CURRENCIES, cn, sanitizeImageSrc } from "@/lib/utils";
 
 function FieldLabel({ children }) {
   return (
@@ -96,8 +96,8 @@ function CompanySection() {
 
         <div className="flex items-center gap-4 mb-5">
           <div className="h-16 w-16 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] flex items-center justify-center overflow-hidden shrink-0">
-            {form.logo_url ? (
-              <img src={form.logo_url} alt="logo" className="h-full w-full object-contain" />
+            {sanitizeImageSrc(form.logo_url) ? (
+              <img src={sanitizeImageSrc(form.logo_url)} alt="logo" className="h-full w-full object-contain" />
             ) : (
               <Building2 size={22} className="text-[var(--ink-muted)]" />
             )}

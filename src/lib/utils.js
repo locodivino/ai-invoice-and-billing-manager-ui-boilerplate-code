@@ -57,3 +57,21 @@ export function relativeTime(date) {
   if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
   return d.toLocaleDateString();
 }
+
+// Whitelist image sources for <img src> / @react-pdf <Image src> (logos).
+// Rejects javascript: URLs and data URIs that carry executable payloads
+// (<script>/<foreignObject>/<onerror>/...) which could be used for DOM XSS.
+const IMAGE_DATA_RE = /^data:image\/(png|jpe?g|gif|webp)(;base64)?,/i;
+const IMAGE_SVG_DATA_RE = /^data:image\/svg\+xml(;base64)?,/i;
+const IMAGE_HTTP_RE = /^https?:\/\/[^\s]+\.(png|jpe?g|gif|webp|svg)(\?.*)?$/i;
+const BLOCKED_IN_SVG = /<\s*script|<\s*foreignobject|javascript:|<\s*iframe|onerror\s*=|onload\s*=/i;
+
+export function sanitizeImageSrc(src) {
+  if (!src || typeof src !== "string") return "";
+  const value = src.trim();
+  if (/^javascript:/i.test(value)) return "";
+  if (IMAGE_DATA_RE.test(value)) return value; // raster data URIs are inert
+  if (IMAGE_SVG_DATA_RE.test(value) && !BLOCKED_IN_SVG.test(value)) return value;
+  if (IMAGE_HTTP_RE.test(value)) return value;
+  return ""; // anything else (data:text, schemes, non-image paths) is rejected
+}

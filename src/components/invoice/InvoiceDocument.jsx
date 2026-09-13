@@ -6,7 +6,7 @@ import {
   Image,
   StyleSheet,
 } from "@react-pdf/renderer";
-import { formatMoney, formatDate } from "@/lib/utils";
+import { formatMoney, formatDate, sanitizeImageSrc } from "@/lib/utils";
 
 const TEAL = "#0d9488";
 const DARK = "#0c1a17";
@@ -84,7 +84,7 @@ export function InvoiceDocument({ invoice, settings }) {
         {/* Header */}
         <View style={styles.headerRow}>
           <View>
-            {s.logo_url ? <Image src={s.logo_url} style={styles.logo} /> : null}
+            {sanitizeImageSrc(s.logo_url) ? <Image src={sanitizeImageSrc(s.logo_url)} style={styles.logo} /> : null}
             <Text style={styles.company}>{s.company_name || "Your Company"}</Text>
             {s.address ? <Text style={styles.muted}>{s.address}</Text> : null}
             {s.email ? <Text style={styles.muted}>{s.email}</Text> : null}
